@@ -1,4 +1,4 @@
-﻿Recorded:        2026-11-26 10:49:34 +00:00
+﻿Recorded:        2026-11-26 12:29:08 +00:00
 OS:              Microsoft Windows 11 Business 10.0.26300
 CPU:             Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz (4 cores, 8 threads)
 RAM:             31.8 GB
@@ -16,8 +16,8 @@ Test 1 ΓÇö two buyers, one unit, 25 rounds
   ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
 
 Test 2 ΓÇö flash sale: 400 buyers, 50 units
-        50 sold, 350 refused, 0 errored, wall clock 3.12s
-  ok    exactly 50 sold, none oversold, no errors, 3.12s
+        50 sold, 350 refused, 0 errored, wall clock 3.78s
+  ok    exactly 50 sold, none oversold, no errors, 3.78s
 
 Test 3 ΓÇö asking for more than exists
   ok    refused cleanly, stock untouched
@@ -36,8 +36,8 @@ Test 1 ΓÇö two buyers, one unit, 25 rounds
   ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
 
 Test 2 ΓÇö flash sale: 400 buyers, 50 units
-        50 sold, 350 refused, 0 errored, wall clock 3.04s
-  ok    exactly 50 sold, none oversold, no errors, 3.04s
+        50 sold, 350 refused, 0 errored, wall clock 4.13s
+  ok    exactly 50 sold, none oversold, no errors, 4.13s
 
 Test 3 ΓÇö asking for more than exists
   ok    refused cleanly, stock untouched
@@ -56,8 +56,8 @@ Test 1 ΓÇö two buyers, one unit, 25 rounds
   ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
 
 Test 2 ΓÇö flash sale: 400 buyers, 50 units
-        50 sold, 350 refused, 0 errored, wall clock 3.95s
-  ok    exactly 50 sold, none oversold, no errors, 3.95s
+        50 sold, 350 refused, 0 errored, wall clock 3.76s
+  ok    exactly 50 sold, none oversold, no errors, 3.76s
 
 Test 3 ΓÇö asking for more than exists
   ok    refused cleanly, stock untouched
@@ -76,8 +76,8 @@ Test 1 ΓÇö two buyers, one unit, 25 rounds
   ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
 
 Test 2 ΓÇö flash sale: 400 buyers, 50 units
-        50 sold, 350 refused, 0 errored, wall clock 4.03s
-  ok    exactly 50 sold, none oversold, no errors, 4.03s
+        50 sold, 350 refused, 0 errored, wall clock 3.79s
+  ok    exactly 50 sold, none oversold, no errors, 3.79s
 
 Test 3 ΓÇö asking for more than exists
   ok    refused cleanly, stock untouched
@@ -96,8 +96,8 @@ Test 1 ΓÇö two buyers, one unit, 25 rounds
   ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
 
 Test 2 ΓÇö flash sale: 400 buyers, 50 units
-        50 sold, 350 refused, 0 errored, wall clock 4.09s
-  ok    exactly 50 sold, none oversold, no errors, 4.09s
+        50 sold, 350 refused, 0 errored, wall clock 3.96s
+  ok    exactly 50 sold, none oversold, no errors, 3.96s
 
 Test 3 ΓÇö asking for more than exists
   ok    refused cleanly, stock untouched
@@ -116,8 +116,8 @@ Test 1 ΓÇö two buyers, one unit, 25 rounds
   ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
 
 Test 2 ΓÇö flash sale: 400 buyers, 50 units
-        50 sold, 350 refused, 0 errored, wall clock 4.24s
-  ok    exactly 50 sold, none oversold, no errors, 4.24s
+        50 sold, 350 refused, 0 errored, wall clock 3.58s
+  ok    exactly 50 sold, none oversold, no errors, 3.58s
 
 Test 3 ΓÇö asking for more than exists
   ok    refused cleanly, stock untouched
