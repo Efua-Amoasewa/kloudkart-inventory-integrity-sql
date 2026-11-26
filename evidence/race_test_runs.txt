@@ -1,0 +1,130 @@
+﻿Recorded:        2026-11-26 10:49:34 +00:00
+OS:              Microsoft Windows 11 Business 10.0.26300
+CPU:             Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz (4 cores, 8 threads)
+RAM:             31.8 GB
+Python:          Python 3.15.2
+psycopg2:        2.9.13 (dt dec pq3 ext lo64)
+Docker:          Docker version 29.9.3, build 5457199
+PostgreSQL:      18.7 (Debian 18.7-1.pgdg13+5) (container kloudkart-db, max_connections=500)
+
+===== run 1 of 6 =====
+race_test.py ΓÇö Kloud Kart order placement under contention
+==================================================================
+  place_order found: place_order(p_customer_id bigint, p_product_id bigint, p_quantity integer)
+
+Test 1 ΓÇö two buyers, one unit, 25 rounds
+  ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
+
+Test 2 ΓÇö flash sale: 400 buyers, 50 units
+        50 sold, 350 refused, 0 errored, wall clock 3.12s
+  ok    exactly 50 sold, none oversold, no errors, 3.12s
+
+Test 3 ΓÇö asking for more than exists
+  ok    refused cleanly, stock untouched
+
+Test 4 ΓÇö audit trail after contention
+  ok    5 sold, 6 movements recorded
+
+==================================================================
+PASSED ΓÇö exactly one buyer gets the last unit, every time.
+===== run 2 of 6 =====
+race_test.py ΓÇö Kloud Kart order placement under contention
+==================================================================
+  place_order found: place_order(p_customer_id bigint, p_product_id bigint, p_quantity integer)
+
+Test 1 ΓÇö two buyers, one unit, 25 rounds
+  ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
+
+Test 2 ΓÇö flash sale: 400 buyers, 50 units
+        50 sold, 350 refused, 0 errored, wall clock 3.04s
+  ok    exactly 50 sold, none oversold, no errors, 3.04s
+
+Test 3 ΓÇö asking for more than exists
+  ok    refused cleanly, stock untouched
+
+Test 4 ΓÇö audit trail after contention
+  ok    5 sold, 6 movements recorded
+
+==================================================================
+PASSED ΓÇö exactly one buyer gets the last unit, every time.
+===== run 3 of 6 =====
+race_test.py ΓÇö Kloud Kart order placement under contention
+==================================================================
+  place_order found: place_order(p_customer_id bigint, p_product_id bigint, p_quantity integer)
+
+Test 1 ΓÇö two buyers, one unit, 25 rounds
+  ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
+
+Test 2 ΓÇö flash sale: 400 buyers, 50 units
+        50 sold, 350 refused, 0 errored, wall clock 3.95s
+  ok    exactly 50 sold, none oversold, no errors, 3.95s
+
+Test 3 ΓÇö asking for more than exists
+  ok    refused cleanly, stock untouched
+
+Test 4 ΓÇö audit trail after contention
+  ok    5 sold, 6 movements recorded
+
+==================================================================
+PASSED ΓÇö exactly one buyer gets the last unit, every time.
+===== run 4 of 6 =====
+race_test.py ΓÇö Kloud Kart order placement under contention
+==================================================================
+  place_order found: place_order(p_customer_id bigint, p_product_id bigint, p_quantity integer)
+
+Test 1 ΓÇö two buyers, one unit, 25 rounds
+  ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
+
+Test 2 ΓÇö flash sale: 400 buyers, 50 units
+        50 sold, 350 refused, 0 errored, wall clock 4.03s
+  ok    exactly 50 sold, none oversold, no errors, 4.03s
+
+Test 3 ΓÇö asking for more than exists
+  ok    refused cleanly, stock untouched
+
+Test 4 ΓÇö audit trail after contention
+  ok    5 sold, 6 movements recorded
+
+==================================================================
+PASSED ΓÇö exactly one buyer gets the last unit, every time.
+===== run 5 of 6 =====
+race_test.py ΓÇö Kloud Kart order placement under contention
+==================================================================
+  place_order found: place_order(p_customer_id bigint, p_product_id bigint, p_quantity integer)
+
+Test 1 ΓÇö two buyers, one unit, 25 rounds
+  ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
+
+Test 2 ΓÇö flash sale: 400 buyers, 50 units
+        50 sold, 350 refused, 0 errored, wall clock 4.09s
+  ok    exactly 50 sold, none oversold, no errors, 4.09s
+
+Test 3 ΓÇö asking for more than exists
+  ok    refused cleanly, stock untouched
+
+Test 4 ΓÇö audit trail after contention
+  ok    5 sold, 6 movements recorded
+
+==================================================================
+PASSED ΓÇö exactly one buyer gets the last unit, every time.
+===== run 6 of 6 =====
+race_test.py ΓÇö Kloud Kart order placement under contention
+==================================================================
+  place_order found: place_order(p_customer_id bigint, p_product_id bigint, p_quantity integer)
+
+Test 1 ΓÇö two buyers, one unit, 25 rounds
+  ok    25/25 rounds: exactly one winner, stock 0, one order, no errors
+
+Test 2 ΓÇö flash sale: 400 buyers, 50 units
+        50 sold, 350 refused, 0 errored, wall clock 4.24s
+  ok    exactly 50 sold, none oversold, no errors, 4.24s
+
+Test 3 ΓÇö asking for more than exists
+  ok    refused cleanly, stock untouched
+
+Test 4 ΓÇö audit trail after contention
+  ok    5 sold, 6 movements recorded
+
+==================================================================
+PASSED ΓÇö exactly one buyer gets the last unit, every time.
+SUMMARY: 6 of 6 consecutive runs passed
