@@ -1,0 +1,189 @@
+﻿Performance measurement - stage: after
+Recorded:   2026-11-26 11:35:20 +00:00
+OS:         Microsoft Windows 11 Business 10.0.26300
+CPU:        Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz (4 cores, 8 threads)
+RAM:        31.8 GB
+Docker:     Docker version 29.9.3, build 5457199
+PostgreSQL: 18.7 (Debian 18.7-1.pgdg13+5) in container kloudkart-db (default memory settings)
+Data:       products 4023, customers 40420, orders 159384
+Method:     1 warm-up run discarded, then 20 runs; EXPLAIN (ANALYZE) Execution Time;
+            warm cache; median and nearest-rank p95 reported; writes rolled back.
+
+| Scenario | Runs | Median ms | p95 ms | Worst ms |
+|---|---|---|---|---|
+| Monday report: every customer summary | 20 | 3.14 | 3.78 | 3.87 |
+| Monday report: top 100 | 20 | 0.07 | 0.10 | 0.12 |
+| Monday report: running total, every order | 20 | 9.63 | 10.09 | 13.14 |
+| Monday report: monthly spend, trailing 12 | 20 | 7.09 | 9.40 | 10.68 |
+| Low-stock rollup (live view, unchanged) | 20 | 5.99 | 6.86 | 11.03 |
+| One customer's orders (lookup) | 20 | 0.13 | 0.19 | 0.19 |
+| Write cost: insert 1,000 orders (rolled back) | 20 | 19.33 | 25.27 | 35.60 |
+
+Plans (EXPLAIN ANALYZE, BUFFERS), one run per scenario:
+===== Monday report: every customer summary
+SELECT * FROM monday_customer_summary
+BEGIN
+Seq Scan on monday_customer_summary  (cost=0.00..932.95 rows=38095 width=82) (actual time=0.010..1.943 rows=38095.00 loops=1)
+  Buffers: shared hit=552
+Planning:
+  Buffers: shared hit=92
+Planning Time: 0.279 ms
+Execution Time: 3.100 ms
+ROLLBACK
+
+===== Monday report: top 100
+SELECT * FROM monday_top_100
+BEGIN
+Index Scan using monday_customer_summary_rank_idx on monday_customer_summary  (cost=0.29..11.02 rows=99 width=82) (actual time=0.004..0.015 rows=100.00 loops=1)
+  Index Cond: (spend_rank <= 100)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=148
+Planning Time: 0.471 ms
+Execution Time: 0.055 ms
+ROLLBACK
+
+===== Monday report: running total, every order
+SELECT * FROM monday_order_running_total
+BEGIN
+Seq Scan on monday_order_running_total  (cost=0.00..2172.30 rows=124030 width=30) (actual time=0.008..5.718 rows=124030.00 loops=1)
+  Buffers: shared hit=932
+Planning:
+  Buffers: shared hit=86
+Planning Time: 0.343 ms
+Execution Time: 9.734 ms
+ROLLBACK
+
+===== Monday report: monthly spend, trailing 12
+SELECT * FROM monday_monthly_spend
+BEGIN
+Seq Scan on monday_monthly_spend  (cost=0.00..1545.75 rows=93375 width=23) (actual time=0.005..4.004 rows=93375.00 loops=1)
+  Buffers: shared hit=612
+Planning:
+  Buffers: shared hit=71
+Planning Time: 0.221 ms
+Execution Time: 6.907 ms
+ROLLBACK
+
+===== Low-stock rollup (live view, unchanged)
+SELECT * FROM low_stock_by_category
+BEGIN
+Append  (cost=680.61..830.33 rows=2233 width=74) (actual time=5.670..6.002 rows=95.00 loops=1)
+  Buffers: shared hit=102
+  ->  Subquery Scan on "*SELECT* 1"  (cost=680.61..730.83 rows=2232 width=74) (actual time=5.669..5.709 rows=94.00 loops=1)
+        Buffers: shared hit=55
+        ->  HashAggregate  (cost=680.61..708.51 rows=2232 width=106) (actual time=5.668..5.700 rows=94.00 loops=1)
+              Group Key: c.category_id, walk.depth, walk.full_path
+              Batches: 1  Memory Usage: 105kB
+              Buffers: shared hit=55
+              ->  Hash Right Join  (cost=460.31..635.97 rows=2232 width=58) (actual time=0.841..2.868 rows=12919.00 loops=1)
+                    Hash Cond: (p.category_id = descend.descendant_id)
+                    Buffers: shared hit=55
+                    ->  Seq Scan on products p  (cost=0.00..87.51 rows=4051 width=12) (actual time=0.007..0.258 rows=4023.00 loops=1)
+                          Buffers: shared hit=47
+                    ->  Hash  (cost=458.91..458.91 rows=112 width=54) (actual time=0.823..0.831 rows=260.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 29kB
+                          Buffers: shared hit=8
+                          ->  Hash Right Join  (cost=445.77..458.91 rows=112 width=54) (actual time=0.512..0.784 rows=260.00 loops=1)
+                                Hash Cond: (walk.category_id = c.category_id)
+                                Buffers: shared hit=8
+                                ->  CTE Scan on walk  (cost=62.01..70.95 rows=224 width=72) (actual time=0.008..0.241 rows=91.00 loops=1)
+                                      Filter: (NOT is_cycle)
+                                      Storage: Memory  Maximum Storage: 34kB
+                                      Buffers: shared hit=5
+                                      CTE walk
+                                        ->  Recursive Union  (cost=0.00..62.01 rows=447 width=83) (actual time=0.006..0.201 rows=91.00 loops=1)
+                                              Storage: Memory  Maximum Storage: 46kB
+                                              Buffers: shared hit=5
+                                              ->  Seq Scan on categories categories_1  (cost=0.00..1.94 rows=7 width=61) (actual time=0.006..0.011 rows=7.00 loops=1)
+                                                    Filter: (parent_id IS NULL)
+                                                    Rows Removed by Filter: 87
+                                                    Buffers: shared hit=1
+                                              ->  Hash Join  (cost=1.84..5.56 rows=44 width=83) (actual time=0.020..0.040 rows=21.00 loops=4)
+                                                    Hash Cond: (child_1.parent_id = w.category_id)
+                                                    Buffers: shared hit=4
+                                                    ->  Seq Scan on categories child_1  (cost=0.00..1.94 rows=94 width=18) (actual time=0.002..0.006 rows=94.00 loops=4)
+                                                          Buffers: shared hit=4
+                                                    ->  Hash  (cost=1.40..1.40 rows=35 width=72) (actual time=0.011..0.011 rows=22.75 loops=4)
+                                                          Buckets: 1024  Batches: 1  Memory Usage: 18kB
+                                                          ->  WorkTable Scan on walk w  (cost=0.00..1.40 rows=35 width=72) (actual time=0.000..0.003 rows=22.75 loops=4)
+                                                                Filter: (NOT is_cycle)
+                                ->  Hash  (cost=382.51..382.51 rows=100 width=18) (actual time=0.495..0.499 rows=260.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 22kB
+                                      Buffers: shared hit=3
+                                      ->  Hash Join  (cost=379.81..382.51 rows=100 width=18) (actual time=0.399..0.459 rows=260.00 loops=1)
+                                            Hash Cond: (descend.ancestor_id = c.category_id)
+                                            Buffers: shared hit=3
+                                            ->  HashAggregate  (cost=376.69..378.82 rows=213 width=8) (actual time=0.361..0.388 rows=260.00 loops=1)
+                                                  Group Key: descend.ancestor_id, descend.descendant_id
+                                                  Batches: 1  Memory Usage: 56kB
+                                                  Buffers: shared hit=2
+                                                  CTE descend
+                                                    ->  Recursive Union  (cost=0.00..328.68 rows=2134 width=41) (actual time=0.005..0.238 rows=262.00 loops=1)
+                                                          Storage: Memory  Maximum Storage: 53kB
+                                                          Buffers: shared hit=2
+                                                          ->  Seq Scan on categories  (cost=0.00..1.94 rows=94 width=41) (actual time=0.004..0.020 rows=94.00 loops=1)
+                                                                Buffers: shared hit=1
+                                                          ->  Hash Join  (cost=3.12..30.54 rows=204 width=41) (actual time=0.010..0.043 rows=42.00 loops=4)
+                                                                Hash Cond: (d.descendant_id = child.parent_id)
+                                                                Buffers: shared hit=1
+                                                                ->  WorkTable Scan on descend d  (cost=0.00..18.80 rows=470 width=40) (actual time=0.000..0.004 rows=65.00 loops=4)
+                                                                      Filter: (NOT is_cycle)
+                                                                      Rows Removed by Filter: 0
+                                                                ->  Hash  (cost=1.94..1.94 rows=94 width=8) (actual time=0.021..0.021 rows=87.00 loops=1)
+                                                                      Buckets: 1024  Batches: 1  Memory Usage: 12kB
+                                                                      Buffers: shared hit=1
+                                                                      ->  Seq Scan on categories child  (cost=0.00..1.94 rows=94 width=8) (actual time=0.003..0.009 rows=94.00 loops=1)
+                                                                            Buffers: shared hit=1
+                                                  ->  CTE Scan on descend  (cost=0.00..42.68 rows=1067 width=8) (actual time=0.006..0.306 rows=260.00 loops=1)
+                                                        Filter: (NOT is_cycle)
+                                                        Rows Removed by Filter: 2
+                                                        Storage: Memory  Maximum Storage: 47kB
+                                                        Buffers: shared hit=2
+                                            ->  Hash  (cost=1.94..1.94 rows=94 width=14) (actual time=0.029..0.029 rows=94.00 loops=1)
+                                                  Buckets: 1024  Batches: 1  Memory Usage: 13kB
+                                                  Buffers: shared hit=1
+                                                  ->  Seq Scan on categories c  (cost=0.00..1.94 rows=94 width=14) (actual time=0.007..0.013 rows=94.00 loops=1)
+                                                        Buffers: shared hit=1
+  ->  Aggregate  (cost=88.32..88.33 rows=1 width=96) (actual time=0.284..0.284 rows=1.00 loops=1)
+        Buffers: shared hit=47
+        ->  Seq Scan on products  (cost=0.00..87.51 rows=65 width=4) (actual time=0.038..0.277 rows=37.00 loops=1)
+              Filter: (category_id IS NULL)
+              Rows Removed by Filter: 3986
+              Buffers: shared hit=47
+Planning:
+  Buffers: shared hit=262
+Planning Time: 1.175 ms
+Execution Time: 6.246 ms
+ROLLBACK
+
+===== One customer's orders (lookup)
+SELECT order_id, order_date, total_amount FROM orders WHERE customer_id = 116661
+BEGIN
+Bitmap Heap Scan on orders  (cost=4.33..23.51 rows=5 width=19) (actual time=0.044..0.094 rows=9.00 loops=1)
+  Recheck Cond: (customer_id = 116661)
+  Heap Blocks: exact=9
+  Buffers: shared hit=11
+  ->  Bitmap Index Scan on orders_customer_id_idx  (cost=0.00..4.33 rows=5 width=0) (actual time=0.023..0.024 rows=9.00 loops=1)
+        Index Cond: (customer_id = 116661)
+        Index Searches: 1
+        Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=86
+Planning Time: 0.514 ms
+Execution Time: 0.176 ms
+ROLLBACK
+
+===== Write cost: insert 1,000 orders (rolled back)
+INSERT INTO orders (order_id, customer_id, order_date, status, total_amount) SELECT -g, 116661, now(), 'completed', 1 FROM generate_series(1, 1000) AS g
+BEGIN
+Insert on orders  (cost=0.00..17.50 rows=0 width=0) (actual time=4.112..4.113 rows=0.00 loops=1)
+  Buffers: shared hit=6917 dirtied=9 written=9
+  ->  Function Scan on generate_series g  (cost=0.00..17.50 rows=1000 width=64) (actual time=0.109..0.301 rows=1000.00 loops=1)
+Planning Time: 0.089 ms
+Trigger for constraint orders_customer_fk: time=6.856 calls=1000
+Trigger for constraint orders_status_known_fk: time=6.351 calls=1000
+Execution Time: 17.497 ms
+ROLLBACK
+
