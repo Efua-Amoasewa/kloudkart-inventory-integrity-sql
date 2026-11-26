@@ -1,0 +1,9 @@
+# The bundle's CSV extracts hold customer names, emails and phone numbers.
+# They are governed as if real, so they stay out of this (public) repository.
+# Drop the CSVs from the Evalu8 data bundle into bundle/data/ before loading.
+bundle/data/*.csv
+
+# Python
+__pycache__/
+.venv/
+*.pyc
