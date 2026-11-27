@@ -40,8 +40,19 @@ If PowerShell refuses to run scripts, allow them for this window only first:
 `run_all.ps1` is the fresh load: it deletes the `kloudkart-db` container, starts PostgreSQL 18
 with `max_connections=500` (race test 2 opens 400 connections; the default is 100), loads the
 bundle exactly as shipped, and runs every SQL file below in order, stopping at the first error.
-`run_race_test.ps1` runs `bundle/race_test.py` six times and saves the output with the machine's
-details to `evidence/race_test_runs.txt`.
+Each run is logged to `evidence/fresh_load_log.txt` (time, machine, every stage with its duration
+and result, and the error if one fails). `run_race_test.ps1` runs `bundle/race_test.py` six times
+and saves the output with the machine's details to `evidence/race_test_runs.txt`.
+
+## Logs
+
+| Log | What it records | Where |
+|---|---|---|
+| Stock movements (the audit trail) | every stock change: amount, reason, order, stock after, who, when; cannot be edited | table `inventory_log` |
+| Report refreshes | every refresh of the stored Monday report and how long it took | table `monday_report_refresh_log` |
+| Fresh-load runs | each run of `run_all.ps1`, stage by stage, with machine details | [`evidence/fresh_load_log.txt`](evidence/fresh_load_log.txt) |
+| Race-test runs | six consecutive runs of `race_test.py`, with machine details | [`evidence/race_test_runs.txt`](evidence/race_test_runs.txt) |
+| Performance runs | before/after timings and query plans, with machine details | [`evidence/performance_before.txt`](evidence/performance_before.txt), [`evidence/performance_after.txt`](evidence/performance_after.txt) |
 
 ## Run order
 
