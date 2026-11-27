@@ -37,6 +37,12 @@ How the Monday report's base is formed from what was loaded.
 | Customer rows loaded | 40,420 | | `load.sql` row count |
 | … distinct people (by trimmed, lower-cased email) | 39,885 | −535 | F-06: one person, several rows |
 
+These figures are as of 26 November 2026. The report counts orders dated up to the moment it
+runs, so three future-dated "spend" orders become current on 4 December 2026, 14 January 2027
+and 29 January 2027. A fresh load from 4 December therefore shows 124,031 spend orders (and
+F-11 falls from 15 to 14), rising to 124,033 by the end of January. That is the report behaving
+correctly, not a discrepancy.
+
 ## Findings, ranked by risk
 
 ### F-01: Products with negative stock — Severity: Critical
@@ -129,8 +135,8 @@ How the Monday report's base is formed from what was loaded.
 - **How I detected it:** `GROUP BY order_id, product_id, quantity, unit_price HAVING count(*) > 1`.
 - **Scale:** 578 surplus rows, 894 units, 941,247.62 of line value.
 - **Effect on the client's number:** Line-based revenue and units sold are overstated by those
-  amounts. Together with F-04 this explains most of the 2,279 orders whose total disagrees with
-  their lines.
+  amounts. Together with F-04 this explains 493 of the 2,279 orders whose total disagrees with
+  their lines; the other 1,786 are listed under "Could not verify".
 - **What I did about it:** Report uses `total_amount`. Not deleted: the 39 non-identical pairs show
   that a repeated product can be legitimate, and only the application owner can say which is
   which.
@@ -242,9 +248,10 @@ How the Monday report's base is formed from what was loaded.
 
 ## Could not verify
 
-- Whether `total_amount` is right on the roughly 1,790 orders whose total still differs from
-  their lines after removing F-04 and F-05 (about 740 k in total). Discounts or delivery fees
-  would explain it; the extract has no column for either.
+- Whether `total_amount` is right on the 1,786 orders whose total still differs from their lines
+  after removing F-04 and F-05: 963,222.06 of difference in total (net +191,244.48, the totals
+  being higher than their lines). Discounts or delivery fees would explain it; the extract has no
+  column for either.
 - The true stock of the 14 negative and 144 mismatched products: only a physical count can.
 - Whether zero-priced lines are promotions or missing prices.
 - Where the Promotions / Seasonal Promotions loop and the Clearance category belong in the tree.

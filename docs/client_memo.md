@@ -19,7 +19,7 @@
 
 | What you asked for | Status | Evidence |
 |---|---|---|
-| No overselling: one buyer gets the last unit, the other is told "out of stock" | Done | Tested 6 times in a row: 400 shoppers racing for 50 units, exactly 50 sold, no errors, about 3–4 seconds each time |
+| No overselling: one buyer gets the last unit, the other is told "out of stock" | Done | Tested 6 times in a row: 400 shoppers racing for 50 units, exactly 50 sold, no errors, about 4 seconds each time |
 | Monday report in seconds | Done | Opens in under a hundredth of a second; it was about half a second before, on your data |
 | Low stock at a glance, through every category level | Done | About 6 thousandths of a second; still works when a new level is added |
 | A trail of every stock movement | Done | Every change is recorded with its reason, and records cannot be edited afterwards |
@@ -44,7 +44,7 @@ each time.
 - **I could not reproduce Adwoa's 40 minutes**; on the data I was given the old-style report took
   about half a second. I can say the new report is fast; I cannot say why hers was slow.
 - **The true stock of the 157 listed products**: only a physical count can tell.
-- **About 1,790 orders whose total differs from their items** (about 740 thousand in all) —
+- **1,786 orders whose total differs from their items**, by about 963 thousand in all —
   possibly discounts or delivery fees; the records do not say.
 - **A real flash sale**: tested with 400 simulated shoppers on a laptop, not on your live system,
   and only for orders of a single product.
