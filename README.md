@@ -113,9 +113,3 @@ evidence/    race-test runs and before/after timings with machine details
 decisions/   architecture decision records
 docs/        data findings, measurement report, improvement, client memo
 ```
-
-## Use of AI
-
-Claude (Anthropic) was used to explain concepts, draft SQL and documents, and review work. I ran
-every command, checked every result against the database, and the decisions recorded here are
-ones I can explain and defend.
