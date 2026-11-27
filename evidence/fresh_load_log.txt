@@ -1,0 +1,26 @@
+﻿Kloud Kart fresh load
+Started:    2026-11-27 10:16:15 +00:00
+Commit:     5bbecea build: save every fresh-load run to a log file
+OS:         Microsoft Windows 11 Business 10.0.26300
+CPU:        Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz (4 cores, 8 threads)
+RAM:        31.8 GB
+Docker:     Docker version 29.9.3, build 5457199
+Image:      postgres:18, max_connections=500
+
+ok    Check password is set                     0 s
+ok    Remove old container                    4.9 s
+ok    Start PostgreSQL 18 container           0.5 s
+ok    Wait for server                         2.8 s
+ok    Load bundle/schema.sql                  0.2 s
+ok    Load bundle/load.sql                    3.5 s
+ok    Run sql/00_check_setup.sql              0.2 s
+ok    Run sql/01_integrity_checks.sql         0.8 s
+ok    Run sql/02_schema_fixes.sql             0.4 s
+ok    Run sql/03_audit_trail.sql              0.2 s
+ok    Run sql/04_place_order.sql              0.2 s
+ok    Run sql/05_monday_report.sql            0.2 s
+ok    Run sql/06_category_rollup.sql          0.2 s
+ok    Run sql/07_performance.sql              2.1 s
+ok    Run sql/08_improvement.sql              0.2 s
+
+RESULT: fresh load complete - schema, data and all 9 solution files in 20 s
