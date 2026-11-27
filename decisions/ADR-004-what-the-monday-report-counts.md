@@ -59,8 +59,9 @@ in the future (F-11). Each decision below is applied in `sql/05_monday_report.sq
 ## Consequences
 
 - **What this buys:** Figures that match a hand calculation exactly (`tests/test_monday_report.sql`:
-  258,975.35 by hand and by report for rank 1), reconciled to 124,030 orders, with every
-  exclusion counted in `docs/data_findings.md`.
+  258,975.35 by hand and by report for rank 1), reconciled to 124,030 orders as of 26 November 2026
+  (124,031 from 4 December, as a future-dated order comes due), with every exclusion counted in
+  `docs/data_findings.md`.
 - **What this costs:** The report shows less money than a figure including pending orders,
   and "top 100" can hold slightly more than 100 people when there is a tie at the boundary.
 - **What it costs the client if I am wrong:** If Nana counts shipped orders as not yet

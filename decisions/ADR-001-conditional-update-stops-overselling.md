@@ -89,7 +89,7 @@ underneath (`sql/02_schema_fixes.sql`).
 ## What this survives
 
 A 400-buyer flash sale on 50 units: exactly 50 sold, 350 told "out of stock", 0 errors, in
-3.04–4.24 s of wall clock per run across 6 runs, including opening 400 connections, on a
+3.58–4.13 s of wall clock per run across 6 runs on a fresh load, including opening 400 connections, on a
 4-core laptop. Each sale holds the product lock only for the decrement and three inserts,
 so the queue drains quickly; most of the wall clock is connection set-up.
 

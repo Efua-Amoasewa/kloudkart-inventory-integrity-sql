@@ -7,8 +7,8 @@
 -- transaction block. psql -v ON_ERROR_STOP=1 still stops at the first error.
 
 -- ------------------------------------------------------------------ 1. fresher statistics
--- The status map was created after load.sql's ANALYZE, so the planner guessed 435 rows for a
--- 15-row table. Wrong estimates feed every join choice above them.
+-- The status map was created after load.sql's ANALYZE, so the planner estimated 435 rows where
+-- 7 came back (the table holds 15). Wrong estimates feed every join choice above them.
 ANALYZE order_status_map;
 
 -- ------------------------------------------------------------------ 2. index for lookups

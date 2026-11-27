@@ -44,7 +44,7 @@ After the changes in `sql/07_performance.sql`.
 | Low-stock rollup (live) | 20 | 5.99 ms | 6.86 ms | 11.03 ms | Yes |
 | One customer's orders | 20 | 0.13 ms | 0.19 ms | 0.19 ms | n/a |
 | Refresh the stored report | 3 | 3.32 s | — | 3.41 s | n/a (paid when nobody waits) |
-| Flash sale: 400 buyers, 50 units | 6 | — | — | 3.04–4.24 s for all 400 | Yes: 50 sold, 0 errors, every run |
+| Flash sale: 400 buyers, 50 units | 6 | — | — | 3.58–4.13 s for all 400 | Yes: 50 sold, 0 errors, every run |
 
 ## Before / after
 
@@ -68,8 +68,8 @@ What changed, and why, from the "before" plans:
   answer (ADR-002) removes all of that from the moment someone reads it.
 - **Lookup:** a sequential scan read all 159,384 orders and discarded 159,375 ("Rows Removed
   by Filter"); an index on `orders(customer_id)` lets it read only the 9 that match.
-- **Statistics:** `order_status_map` had never been analysed, so the planner guessed 435 rows
-  for a 15-row table; `ANALYZE` fixed the estimate.
+- **Statistics:** `order_status_map` had never been analysed, so the planner estimated 435 rows
+  where 7 came back (the table holds 15); `ANALYZE` fixed the estimate.
 
 ## Caveats
 

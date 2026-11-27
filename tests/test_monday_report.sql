@@ -4,7 +4,7 @@
 
 \pset pager off
 
-\echo '--- 1: reconciliation - expect 124030 orders (matches docs/data_findings.md)'
+\echo '--- 1: reconciliation - expect 124030 orders before 4 Dec 2026, 124031 from then (docs/data_findings.md)'
 SELECT count(*) AS people, sum(order_count) AS orders, sum(total_spent) AS spend
 FROM report_customer_summary;
 
